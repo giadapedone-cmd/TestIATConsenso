@@ -647,7 +647,76 @@ function calcolaDScore(topicId) {
     return "<p style='font-size:13px;color:#7f8c8d;text-align:center;'>Invio al server in corso. Puoi scaricare la copia JSON anche mentre attendi.</p>";
   }
 
-  var pagine = argomenti.map(paginaTempi).concat(argomenti.map(paginaDScore));
+function paginaErrori() {
+  var proveConErrori = trials.filter(function(tr) {
+    return tr.trial_type === 'iat-touch' &&
+           Number(tr.numero_errori) > 0;
+  });
+
+  var totaleErrori = proveConErrori.reduce(function(tot, tr) {
+    return tot + Number(tr.numero_errori);
+  }, 0);
+
+  if (proveConErrori.length === 0) {
+    return "<h3>Riepilogo degli errori</h3>" +
+      "<p style='text-align:center;color:#198754;'>" +
+      "Complimenti! Non hai commesso errori durante il test.</p>";
+  }
+
+  var html = "<h3>Riepilogo degli errori</h3>" +
+    "<p style='text-align:center;'>Hai commesso <b>" +
+    totaleErrori + " errori</b>, distribuiti in <b>" +
+    proveConErrori.length + " prove</b>.</p>";
+
+  var gruppi = {};
+
+  proveConErrori.forEach(function(tr) {
+    var n = tr.numero_test || 'Non specificato';
+    if (!gruppi[n]) gruppi[n] = [];
+    gruppi[n].push(tr);
+  });
+
+  Object.keys(gruppi).sort(function(a,b) {
+    return Number(a) - Number(b);
+  }).forEach(function(numeroTest) {
+
+    html += "<h4>Test " + numeroTest + "</h4>";
+
+    html += "<table><tr>" +
+      "<th>Termine</th>" +
+      "<th>Risposta iniziale</th>" +
+      "<th>Categoria corretta</th>" +
+      "<th>Errori</th></tr>";
+
+    gruppi[numeroTest].forEach(function(tr) {
+      var rispostaErrata =
+        tr.primo_lato_scelto === 'left'
+          ? tr.etichetta_sinistra
+          : tr.etichetta_destra;
+
+      var rispostaCorretta =
+        tr.risposta === 'left'
+          ? tr.etichetta_sinistra
+          : tr.etichetta_destra;
+
+      html += "<tr>" +
+        "<td>" + tr.stimulus_name + "</td>" +
+        "<td style='color:#c0392b;'>" + rispostaErrata + "</td>" +
+        "<td style='color:#198754;'>" + rispostaCorretta + "</td>" +
+        "<td>" + tr.numero_errori + "</td>" +
+        "</tr>";
+    });
+
+    html += "</table>";
+  });
+
+  return html;
+}
+
+  var pagine = argomenti
+  .map(paginaTempi)
+  .concat(argomenti.map(paginaDScore))
+  .concat([paginaErrori()]);
   var schermoSuUltima = false;
 
   function mostraPagina(i){
