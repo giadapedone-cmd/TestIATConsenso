@@ -305,17 +305,17 @@ function trialIat(parola, categoria, lato, etichettaSx, etichettaDx, blocco, top
 
 function timelineArgomento(argomento, stereoPrima, primoArgomento){
   var fasi = [];
-  fasi.push(schermataTesto("<h2>"+argomento.titolo+"</h2><p style='text-align:center;'>Tocca Continua per iniziare il primo test.</p>"));
+  fasi.push(schermataTesto("<h2>"+argomento.titolo+"</h2><p style='text-align:center;'>Tocca Continua per iniziare il test.</p>"));
 
   // Nel PRIMO argomento viene mantenuto il Test 1 con i soli nomi LEI/LUI.
   // Dal SECONDO argomento in poi questo blocco viene eliminato.
   var numeroTestAttivita;
   if (primoArgomento) {
-    var domandaTest1 = "Associa ogni parola a <br> COMPORTAMENTO ACCETTABILE o COMPORTAMENTO CRITICABILE.";
-    fasi.push(schermataTesto("<h3>Test 1</h3><p style='text-align:center;'>COMPORTAMENTO ACCETTABILE è in alto a sinistra,<br> COMPORTAMENTO CRITICABILE in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda del nome mostrato.</p>"));
+    var domandaTest1 = "Associa ogni parola a <br> CONCETTO ACCETTABILE o CONCETTO CRITICABILE.";
+    fasi.push(schermataTesto("<h3>Test 1</h3><p style='text-align:center;'>CONCETTO ACCETTABILE è in alto a sinistra,<br> CONCETTO CRITICABILE in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda della parola mostrata.</p>"));
     var t1 = [];
-    target_accettabile.forEach(w=>t1.push(trialIat(w,'accettabile','left',['COMPORTAMENTO ACCETTABILE'],['COMPORTAMENTO CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
-     target_criticabile.forEach(w=>t1.push(trialIat(w,'criticabile','right',['COMPORTAMENTO ACCETTABILE'],['COMPORTAMENTO CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
+    target_accettabile.forEach(w=>t1.push(trialIat(w,'accettabile','left',['CONCETTO ACCETTABILE'],['CONCETTO CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
+     target_criticabile.forEach(w=>t1.push(trialIat(w,'criticabile','right',['CONCETTO ACCETTABILE'],['CONCETTO CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
     fasi = fasi.concat(shuffle(t1));
     numeroTestAttivita = 2;
   } else {
@@ -336,12 +336,12 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     // LEI rimane SEMPRE a sinistra e LUI SEMPRE a destra.
     // Cambia soltanto il lato delle categorie delle attività.
     var sx = femminileConA
-      ? ['COMPORTAMENTO ACCETTABILE', argomento.etichettaA]
-      : ['COMPORTAMENTO ACCETTABILE', argomento.etichettaB];
+      ? ['CONCETTO ACCETTABILE', argomento.etichettaA]
+      : ['CONCETTO ACCETTABILE', argomento.etichettaB];
 
     var dx = femminileConA
-      ? ['COMPORTAMENTO CRITICABILE', argomento.etichettaB]
-      : ['COMPORTAMENTO CRITICABILE', argomento.etichettaA];
+      ? ['CONCETTO CRITICABILE', argomento.etichettaB]
+      : ['CONCETTO CRITICABILE', argomento.etichettaA];
 
     var cond = femminileConA
       ? 'stereotipica'
@@ -388,8 +388,8 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     });
 
     var nota = numeroTest === (primoArgomento ? 3 : 2)
-      ? "Il comportamento accettabile è sempre a sinistra, mentre quello criticabile a destra. <br>Il termine che apparirà al centro è associato ad una delle categorie indicate sopra."
-      : "Attenzione: Il comportamento accettabile rimane a sinistra, mentre quello criticabile a destra. <br> Sono cambiate soltanto le posizioni delle categorie rispetto al test precedente.";
+      ? "Il concetto accettabile è sempre a sinistra, mentre quello criticabile a destra. <br>Il termine che apparirà al centro è associato ad una delle categorie indicate sopra."
+      : "Attenzione: Il concetto accettabile rimane a sinistra, mentre quello criticabile a destra. <br> Sono cambiate soltanto le posizioni delle categorie rispetto al test precedente.";
 
     fasi.push(schermataTesto(
       "<h3>Test " + numeroTest + "</h3>" +
