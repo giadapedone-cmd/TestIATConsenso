@@ -363,12 +363,12 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     // LEI rimane SEMPRE a sinistra e LUI SEMPRE a destra.
     // Cambia soltanto il lato delle categorie delle attività.
     var sx = femminileConA
-      ? ['ACCETTABILE', argomento.etichettaA]
-      : ['CRITICABILE', argomento.etichettaB];
+      ? ['Accettabile', argomento.etichettaA]
+      : ['Accettabile', argomento.etichettaB];
 
     var dx = femminileConA
-      ? ['CRITICABILE', argomento.etichettaB]
-      : ['ACCETTABILE', argomento.etichettaA];
+      ? ['Criticabile', argomento.etichettaB]
+      : ['Criticabile', argomento.etichettaA];
 
     var cond = femminileConA
       ? 'stereotipica'
@@ -381,22 +381,7 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
 
     // I NOMI RESTANO nei test combinati anche negli argomenti successivi:
     // nomi femminili sempre a sinistra, nomi maschili sempre a destra.
-    target_accettabile.forEach(function(w) {
-      ts.push(trialIat(
-        w, 'accettabile', femminileConA ? 'left' : 'right',
-        sx, dx, 'combinato', argomento.id, cond,
-        numeroTest, domandaCombinata
-      ));
-    });
-
-    target_criticabile.forEach(function(w) {
-      ts.push(trialIat(
-        w, 'criticabile', femminileConA ? 'right' : 'left',
-        sx, dx, 'combinato', argomento.id, cond,
-        numeroTest, domandaCombinata
-      ));
-    });
-
+ 
     // Le attività A e B si scambiano di lato tra i due test combinati.
     argomento.attrA.forEach(function(w) {
       ts.push(trialIat(
@@ -409,6 +394,21 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     argomento.attrB.forEach(function(w) {
       ts.push(trialIat(
         w, 'attrB','right',
+        sx, dx, 'combinato', argomento.id, cond,
+        numeroTest, domandaCombinata
+      ));
+    });
+   target_accettabile.forEach(function(w) {
+      ts.push(trialIat(
+        w, 'accettabile', femminileConA ? 'left' : 'right',
+        sx, dx, 'combinato', argomento.id, cond,
+        numeroTest, domandaCombinata
+      ));
+    });
+
+    target_criticabile.forEach(function(w) {
+      ts.push(trialIat(
+        w, 'criticabile', femminileConA ? 'right' : 'left',
         sx, dx, 'combinato', argomento.id, cond,
         numeroTest, domandaCombinata
       ));
