@@ -149,7 +149,7 @@ function copiaJsonNegliAppunti() {
 var REGIONI = ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"];
 
 var target_accettabile = [
-'Accettazione','Fiducia','Rispetto','Reciprocità','Ascolto','Reciprocità','Assertività'
+'Accettazione','Fiducia','Rispetto','Reciprocità','Ascolto','Empatia','Assertività'
 ];
 
 var target_criticabile = [
@@ -198,7 +198,11 @@ function rilevaDispositivo(){
   return mobile ? 'cellulare' : 'pc';
 }
 
-var trials = [];          // dati raccolti, uno per trial
+var trials = []; 
+ // Errori conservati solo nel browser per mostrarli al partecipante.
+// Non vengono inseriti nei dati inviati ad Apps Script.
+var erroriUtente = [];
+ // dati raccolti, uno per trial
 var extra = { dispositivo_rilevato: rilevaDispositivo() };  // id/età/sesso/regione/dispositivo/ordine..., uniti a ogni trial
 var timeline = [];
 var indice = -1;
@@ -274,7 +278,10 @@ var opzPaesi = PAESI.map(p =>
 function trialIat(parola, categoria, lato, etichettaSx, etichettaDx, blocco, topicId, condizione, numeroTest, domanda){
   return function(){
     var inizio = performance.now();
-    var numeroErrori = 0, primoLato = null, rtPrimoTentativo = null;
+  var numeroErrori = 0;
+var primoLato = null;
+var rtPrimoTentativo = null;
+var latiErrati = [];
     schermo.innerHTML =
       "<div class='barra-categorie'><span>"+[].concat(etichettaSx).join(' / ')+"</span><span>"+[].concat(etichettaDx).join(' / ')+"</span></div>"+
       "<div class='parola-centro'><h1>"+parola+"</h1></div>"+
@@ -286,6 +293,19 @@ function trialIat(parola, categoria, lato, etichettaSx, etichettaDx, blocco, top
       var rt = performance.now() - inizio;
       if (primoLato === null){ primoLato = latoScelto; rtPrimoTentativo = rt; }
       if (latoScelto === lato){
+       if (numeroErrori > 0) {
+  erroriUtente.push({
+    numero_test: numeroTest,
+    topic: topicId,
+    stimulus_name: parola,
+    lati_errati: latiErrati.slice(),
+    risposta_corretta: lato,
+    etichetta_sinistra: [].concat(etichettaSx).join(' / '),
+    etichetta_destra: [].concat(etichettaDx).join(' / '),
+    numero_errori: numeroErrori
+  });
+}
+       
         registra({
           rt: rt, rt_primo_tentativo: rtPrimoTentativo, correct: numeroErrori===0, numero_errori: numeroErrori,
           risposta: latoScelto, primo_lato_scelto: primoLato,
@@ -294,11 +314,16 @@ function trialIat(parola, categoria, lato, etichettaSx, etichettaDx, blocco, top
           etichetta_sinistra: [].concat(etichettaSx).join(' / '), etichetta_destra: [].concat(etichettaDx).join(' / '),
           trial_type: 'iat-touch'
         });
-      } else {
-        numeroErrori++;
-        var x = document.createElement('div'); x.className='x-rossa'; x.textContent='✕';
-        document.body.appendChild(x); setTimeout(()=>x.remove(), 300);
-      }
+     } else {
+  numeroErrori++;
+  latiErrati.push(latoScelto);
+
+  var x = document.createElement('div');
+  x.className = 'x-rossa';
+  x.textContent = '✕';
+  document.body.appendChild(x);
+  setTimeout(() => x.remove(), 300);
+}
     }
     document.getElementById('btn-sx').onpointerdown = function(){ tocco('left'); };
     document.getElementById('btn-dx').onpointerdown = function(){ tocco('right'); };
@@ -339,11 +364,11 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     // Cambia soltanto il lato delle categorie delle attività.
     var sx = femminileConA
       ? ['ACCETTABILE', argomento.etichettaA]
-      : ['ACCETTABILE', argomento.etichettaB];
+      : ['CRITICABILE', argomento.etichettaB];
 
     var dx = femminileConA
       ? ['CRITICABILE', argomento.etichettaB]
-      : ['CRITICABILE', argomento.etichettaA];
+      : ['ACCETTABILE', argomento.etichettaA];
 
     var cond = femminileConA
       ? 'stereotipica'
@@ -358,16 +383,16 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     // nomi femminili sempre a sinistra, nomi maschili sempre a destra.
     target_accettabile.forEach(function(w) {
       ts.push(trialIat(
-        w, 'accettabile', 'left', sx, dx,
-        'combinato', argomento.id, cond,
+        w, 'accettabile', femminileConA ? 'left' : 'right',
+        sx, dx, 'combinato', argomento.id, cond,
         numeroTest, domandaCombinata
       ));
     });
 
     target_criticabile.forEach(function(w) {
       ts.push(trialIat(
-        w, 'criticabile', 'right', sx, dx,
-        'combinato', argomento.id, cond,
+        w, 'criticabile', femminileConA ? 'right' : 'left',
+        sx, dx, 'combinato', argomento.id, cond,
         numeroTest, domandaCombinata
       ));
     });
@@ -375,7 +400,7 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     // Le attività A e B si scambiano di lato tra i due test combinati.
     argomento.attrA.forEach(function(w) {
       ts.push(trialIat(
-        w, 'attrA', femminileConA ? 'left' : 'right',
+        w, 'attrA','left',
         sx, dx, 'combinato', argomento.id, cond,
         numeroTest, domandaCombinata
       ));
@@ -383,7 +408,7 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
 
     argomento.attrB.forEach(function(w) {
       ts.push(trialIat(
-        w, 'attrB', femminileConA ? 'right' : 'left',
+        w, 'attrB','right',
         sx, dx, 'combinato', argomento.id, cond,
         numeroTest, domandaCombinata
       ));
@@ -648,35 +673,34 @@ function calcolaDScore(topicId) {
   }
 
 function paginaErrori() {
-  var proveConErrori = trials.filter(function(tr) {
-    return tr.trial_type === 'iat-touch' &&
-           Number(tr.numero_errori) > 0;
-  });
 
-  var totaleErrori = proveConErrori.reduce(function(tot, tr) {
-    return tot + Number(tr.numero_errori);
+  var totaleErrori = erroriUtente.reduce(function(tot, tr) {
+    return tot + tr.numero_errori;
   }, 0);
 
-  if (proveConErrori.length === 0) {
+  if (erroriUtente.length === 0) {
     return "<h3>Riepilogo degli errori</h3>" +
       "<p style='text-align:center;color:#198754;'>" +
       "Complimenti! Non hai commesso errori durante il test.</p>";
   }
 
-  var html = "<h3>Riepilogo degli errori</h3>" +
+  var html =
+    "<h3>Riepilogo degli errori</h3>" +
     "<p style='text-align:center;'>Hai commesso <b>" +
     totaleErrori + " errori</b>, distribuiti in <b>" +
-    proveConErrori.length + " prove</b>.</p>";
+    erroriUtente.length + " prove</b>.</p>";
 
   var gruppi = {};
 
-  proveConErrori.forEach(function(tr) {
+  erroriUtente.forEach(function(tr) {
     var n = tr.numero_test || 'Non specificato';
+
     if (!gruppi[n]) gruppi[n] = [];
+
     gruppi[n].push(tr);
   });
 
-  Object.keys(gruppi).sort(function(a,b) {
+  Object.keys(gruppi).sort(function(a, b) {
     return Number(a) - Number(b);
   }).forEach(function(numeroTest) {
 
@@ -684,25 +708,31 @@ function paginaErrori() {
 
     html += "<table><tr>" +
       "<th>Termine</th>" +
-      "<th>Risposta iniziale</th>" +
-      "<th>Categoria corretta</th>" +
+      "<th>Risposte errate</th>" +
+      "<th>Risposta corretta</th>" +
       "<th>Errori</th></tr>";
 
     gruppi[numeroTest].forEach(function(tr) {
-      var rispostaErrata =
-        tr.primo_lato_scelto === 'left'
+
+      var risposteErrate = tr.lati_errati.map(function(lato) {
+        return lato === 'left'
           ? tr.etichetta_sinistra
           : tr.etichetta_destra;
+      });
 
       var rispostaCorretta =
-        tr.risposta === 'left'
+        tr.risposta_corretta === 'left'
           ? tr.etichetta_sinistra
           : tr.etichetta_destra;
 
       html += "<tr>" +
         "<td>" + tr.stimulus_name + "</td>" +
-        "<td style='color:#c0392b;'>" + rispostaErrata + "</td>" +
-        "<td style='color:#198754;'>" + rispostaCorretta + "</td>" +
+        "<td style='color:#c0392b;'>" +
+        risposteErrate.join('<br>') +
+        "</td>" +
+        "<td style='color:#198754;'>" +
+        rispostaCorretta +
+        "</td>" +
         "<td>" + tr.numero_errori + "</td>" +
         "</tr>";
     });
@@ -712,7 +742,6 @@ function paginaErrori() {
 
   return html;
 }
-
   var pagine = argomenti
   .map(paginaTempi)
   .concat(argomenti.map(paginaDScore))
