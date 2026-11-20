@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>IAT – Libertà e controllo nelle relazioni</title>
+<title>Sezione su libertà e controllo nelle relazioni di coppia</title>
 <style>
   * { box-sizing: border-box; }
   body { margin:0; font-family:Arial, sans-serif; background:#e9ecef; -webkit-tap-highlight-color: transparent; }
@@ -149,11 +149,11 @@ function copiaJsonNegliAppunti() {
 var REGIONI = ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"];
 
 var target_accettabile = [
-'Amore','Fiducia','Rispetto','Complicità','Ascolto','Reciprocità'
+'Accettazione','Fiducia','Rispetto','Reciprocità','Ascolto','Reciprocità','Assertività'
 ];
 
 var target_criticabile = [
- 'Violenza','Urla','Denigrazione','Svalutazione','Minaccia','Umiliazione'
+ 'Prevaricazione','Urla','Sminuimento','Minimizzazione','Diffida','Sottomissione','Accondiscendenza'
 ];
 var argomenti = [
   {
@@ -164,20 +164,22 @@ var argomenti = [
 
     attrA: [
     'Uscire per conto proprio',
-    'Rispettare le scelte del partner',
+    'Rispettare le scelte del/della partner',
     'Essere economicamente indipendenti',
     'Coltivare interessi personali',
-    'Frequentare liberamente i propri amici',
-    'Rispettare gli spazi personali'
+    'Frequentare anche senza il/la partner le proprie amicizie',
+    'Rispettare gli spazi personali',
+    'Rispettare la riservatezza delle conversazioni del/della partner'
     ],
 
     attrB: [
-    'Controllare continuamente gli spostamenti del partner',
-    'Imporre al partner come vestirsi',
-    'Mostrare possessività eccessiva',
-    'Arrabbiarsi quando il partner frequenta gli amici',
-    'Pretendere che il partner racconti ogni cosa',
-    'Controllare il telefono e i messaggi del partner'
+    'Controllare spesso gli spostamenti del/della partner',
+    'Criticare il/la partner per come si veste',
+    'Mostrare possessività',
+    'Arrabbiarsi quando il/la partner frequenta le sue amicizie',
+    'Pretendere che il/la partner racconti ogni cosa',
+    'Controllare il telefono del/della partner',
+     'Verificare la ricezione dei messaggi da parte del/della partner'
     ]
   }
 ];
@@ -311,11 +313,11 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
   // Dal SECONDO argomento in poi questo blocco viene eliminato.
   var numeroTestAttivita;
   if (primoArgomento) {
-    var domandaTest1 = "Associa ogni parola a <br> CONCETTO ACCETTABILE o CONCETTO CRITICABILE.";
-    fasi.push(schermataTesto("<h3>Test 1</h3><p style='text-align:center;'>CONCETTO ACCETTABILE è in alto a sinistra,<br> CONCETTO CRITICABILE in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda della parola mostrata.</p>"));
+    var domandaTest1 = "Associa ogni termine ad <br> ACCETTABILE o CRITICABILE.";
+    fasi.push(schermataTesto("<h3>Test 1</h3><p style='text-align:center;'> ACCETTABILE è in alto a sinistra,<br> CRITICABILE in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda del termine mostrato al centro.</p>"));
     var t1 = [];
-    target_accettabile.forEach(w=>t1.push(trialIat(w,'accettabile','left',['CONCETTO ACCETTABILE'],['CONCETTO CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
-     target_criticabile.forEach(w=>t1.push(trialIat(w,'criticabile','right',['CONCETTO ACCETTABILE'],['CONCETTO CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
+    target_accettabile.forEach(w=>t1.push(trialIat(w,'accettabile','left',['ACCETTABILE'],['CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
+     target_criticabile.forEach(w=>t1.push(trialIat(w,'criticabile','right',['ACCETTABILE'],['CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
     fasi = fasi.concat(shuffle(t1));
     numeroTestAttivita = 2;
   } else {
@@ -324,7 +326,7 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
 
   // Test attività: nel primo argomento è Test 2; nei successivi è Test 1.
   var domandaTestAttivita = "Smista i COMPORTAMENTI in "+argomento.etichettaA.toUpperCase()+" (sinistra) o "+argomento.etichettaB.toUpperCase()+" (destra).";
-  fasi.push(schermataTesto("<h3>Test "+numeroTestAttivita+"</h3><p style='text-align:center;'>"+argomento.etichettaA.toUpperCase()+" è in alto a sinistra, <br> "+argomento.etichettaB.toUpperCase()+" in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda di comportamenti mostrati.</p>"));
+  fasi.push(schermataTesto("<h3>Test "+numeroTestAttivita+"</h3><p style='text-align:center;'>"+argomento.etichettaA.toUpperCase()+" è in alto a sinistra, <br> "+argomento.etichettaB.toUpperCase()+" in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda di comportamenti mostrati al centro.</p>"));
   var t2 = [];
   argomento.attrA.forEach(w=>t2.push(trialIat(w,'attrA','left',[argomento.etichettaA],[argomento.etichettaB],'test2_attributo',argomento.id,null,numeroTestAttivita,domandaTestAttivita)));
   argomento.attrB.forEach(w=>t2.push(trialIat(w,'attrB','right',[argomento.etichettaA],[argomento.etichettaB],'test2_attributo',argomento.id,null,numeroTestAttivita,domandaTestAttivita)));
@@ -336,19 +338,19 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     // LEI rimane SEMPRE a sinistra e LUI SEMPRE a destra.
     // Cambia soltanto il lato delle categorie delle attività.
     var sx = femminileConA
-      ? ['CONCETTO ACCETTABILE', argomento.etichettaA]
-      : ['CONCETTO ACCETTABILE', argomento.etichettaB];
+      ? ['ACCETTABILE', argomento.etichettaA]
+      : ['ACCETTABILE', argomento.etichettaB];
 
     var dx = femminileConA
-      ? ['CONCETTO CRITICABILE', argomento.etichettaB]
-      : ['CONCETTO CRITICABILE', argomento.etichettaA];
+      ? ['CRITICABILE', argomento.etichettaB]
+      : ['CRITICABILE', argomento.etichettaA];
 
     var cond = femminileConA
       ? 'stereotipica'
       : 'controstereotipica';
 
     var domandaCombinata =
-      "Smista PAROLE e COMPORTAMENTI tra " +
+      "Smista TERMINI e COMPORTAMENTI tra " +
       sx.join(' + ') + " (sinistra) e " +
       dx.join(' + ') + " (destra).";
 
@@ -388,8 +390,8 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     });
 
     var nota = numeroTest === (primoArgomento ? 3 : 2)
-      ? "Il concetto accettabile è sempre a sinistra, mentre quello criticabile a destra. <br>Il termine che apparirà al centro è associato ad una delle categorie indicate sopra."
-      : "Attenzione: Il concetto accettabile rimane a sinistra, mentre quello criticabile a destra. <br> Sono cambiate soltanto le posizioni delle categorie rispetto al test precedente.";
+      ? "La categoria <b>Libertà</b> è sempre a sinistra. <br> La categoria <b>Controllo</b> è sempre a destra. <br>Il termine o comportamento che apparirà al centro è associato ad una delle categorie <b>Libertà o Controllo.</b>"
+      : "Attenzione: La categoria <b>Libertà</b> rimane a sinistra. <br> La categoria <b>Controllo</b> rimane a destra. <br> Sono cambiate le posizioni delle categorie <b>ACCETTABILE e CRITICABILE</b> rispetto al test precedente.";
 
     fasi.push(schermataTesto(
       "<h3>Test " + numeroTest + "</h3>" +
@@ -556,8 +558,8 @@ function calcolaDScore(topicId) {
       return "punteggio vicino allo zero; il risultato va interpretato con cautela e non dimostra l'assenza di associazioni implicite";
     }
     return d > 0
-      ? "tempi medi più brevi nella condizione stereotipica rispetto a quella controstereotipica"
-      : "tempi medi più brevi nella condizione controstereotipica rispetto a quella stereotipica";
+      ? "tempi medi più brevi nella condizione stereotipica in cui il controllo viene criticato rispetto a quella controstereotipica in cui il controllo viene accettato"
+      : "tempi medi più brevi nella condizione controstereotipica in cui il controllo viene accettato rispetto a quella stereotipica in cui il controllo viene criticato";
   }
 
   // riga di riepilogo per partecipante (un D-score per argomento): la
@@ -636,7 +638,7 @@ function calcolaDScore(topicId) {
     return "<h3>"+a.titolo+" — Punteggio D</h3>"+
       "<p style='text-align:center;font-size:30px;font-weight:bold;'>"+dTesto+"</p>"+
       "<p style='text-align:center;'>"+frasePerD(d)+"</p>"+
-      "<p style='font-size:12px;color:#7f8c8d;text-align:center;margin-top:10px;'>Il punteggio può variare da <b>-2</b> a <b>+2</b>: se vicino allo zero implica nessuna associazione implicita rilevante; più si allontana dallo zero (in positivo), più forte sarà l'associazione in direzione dello stereotipo; più si allontana dallo zero (in negativo), più forte sarà l'associazione in direzione contraria allo stereotipo.<br> Non è un giudizio sulla persona: riflette solo i tempi di reazione in questo test..</p>";
+      "<p style='font-size:12px;color:#7f8c8d;text-align:center;margin-top:10px;'>Il punteggio può variare da <b>-2</b> a <b>+2</b>: se vicino allo zero implica nessuna associazione implicita rilevante; più si allontana dallo zero (in positivo), più forte sarà l'associazione in direzione dello stereotipo; più si allontana dallo zero (in negativo), più forte sarà l'associazione in direzione contraria allo stereotipo.<br> Non è un giudizio sulla persona: riflette solo i tempi di reazione in questo test.</p>";
   }
 
   function testoStato(){
@@ -679,7 +681,7 @@ function calcolaDScore(topicId) {
 // ---------------- avvio ----------------
 timeline.push(schermataDatiPartecipante());
 timeline.push(schermataTesto(
-  "<h2>Test di associazione implicita</h2><p style='text-align:center;'><p>Affronterai una serie di test sulle valutazioni e sui comportamenti nelle relazioni di coppia.<br> Per ogni prova, associa il termine al centro a una delle due categorie in alto, premendo <b>SINISTRA</b> o <b>DESTRA</b> in base alla posizione della categoria corretta.<br>Rispondi il più velocemente possibile, senza sacrificare l'accuratezza. <br> Se sbagli, correggi la risposta prima di proseguire.</p>"
+  "<h2>Test di associazione implicita</h2><p style='text-align:center;'><p>Affronterai una serie di test sui comportamenti nelle relazioni di coppia.<br> Verranno mostrate in alto, a destra e a sinistra, due categorie opposte. <br>Per ogni prova, comparirà al centro un termine che è associato ad una delle categorie. <br> Il più velocemente possibile, senza sacrificare l'accuratezza, premi <b>SINISTRA</b> o <b>DESTRA</b> per associare il termine alla categoria corretta..<br>Se sbagli, correggi la risposta prima di proseguire.</p>"
 ));
 var ordine = argomenti.slice();
 // Ordine fisso imposto dal protocollo: la combinazione stereotipica
