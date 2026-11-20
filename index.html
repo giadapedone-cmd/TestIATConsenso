@@ -149,11 +149,11 @@ function copiaJsonNegliAppunti() {
 var REGIONI = ["Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino-Alto Adige","Umbria","Valle d'Aosta","Veneto"];
 
 var target_accettabile = [
-'Accettazione','Fiducia','Rispetto','Reciprocità','Ascolto','Empatia','Assertività'
+'Accettazione','Fiducia','Rispetto','Reciprocità','Ascolto','Empatia'
 ];
 
 var target_criticabile = [
- 'Prevaricazione','Urla','Sminuimento','Minimizzazione','Diffida','Sottomissione','Accondiscendenza'
+ 'Prevaricazione','Urla','Sminuimento','Minimizzazione','Diffida','Sottomissione'
 ];
 var argomenti = [
   {
@@ -167,7 +167,7 @@ var argomenti = [
     'Rispettare le scelte del/della partner',
     'Essere economicamente indipendenti',
     'Coltivare interessi personali',
-    'Frequentare anche senza il/la partner le proprie amicizie',
+    'Frequentare senza il/la partner le proprie amicizie',
     'Rispettare gli spazi personali',
     'Rispettare la riservatezza delle conversazioni del/della partner'
     ],
@@ -338,8 +338,8 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
   // Dal SECONDO argomento in poi questo blocco viene eliminato.
   var numeroTestAttivita;
   if (primoArgomento) {
-    var domandaTest1 = "Associa ogni termine ad <br> ACCETTABILE o CRITICABILE.";
-    fasi.push(schermataTesto("<h3>Test 1</h3><p style='text-align:center;'> ACCETTABILE è in alto a sinistra,<br> CRITICABILE in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda del termine mostrato al centro.</p>"));
+    var domandaTest1 = "Associa ogni termine ad <br> Accettabile o Criticabile.";
+    fasi.push(schermataTesto("<h3>Test 1</h3><p style='text-align:center;'> Accettabile è in alto a sinistra,<br> Criticabile in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda del termine mostrato al centro.</p>"));
     var t1 = [];
     target_accettabile.forEach(w=>t1.push(trialIat(w,'accettabile','left',['ACCETTABILE'],['CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
      target_criticabile.forEach(w=>t1.push(trialIat(w,'criticabile','right',['ACCETTABILE'],['CRITICABILE'],'test1_target',argomento.id,null,1,domandaTest1)));
@@ -351,7 +351,7 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
 
   // Test attività: nel primo argomento è Test 2; nei successivi è Test 1.
   var domandaTestAttivita = "Smista i COMPORTAMENTI in "+argomento.etichettaA.toUpperCase()+" (sinistra) o "+argomento.etichettaB.toUpperCase()+" (destra).";
-  fasi.push(schermataTesto("<h3>Test "+numeroTestAttivita+"</h3><p style='text-align:center;'>"+argomento.etichettaA.toUpperCase()+" è in alto a sinistra, <br> "+argomento.etichettaB.toUpperCase()+" in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda di comportamenti mostrati al centro.</p>"));
+  fasi.push(schermataTesto("<h3>Test "+numeroTestAttivita+"</h3><p style='text-align:center;'>"+argomento.etichettaA.toUpperCase()+" è in alto a sinistra, <br> "+argomento.etichettaB.toUpperCase()+" in alto a destra.<br> Tocca SINISTRA o DESTRA a seconda dei comportamenti mostrati al centro.</p>"));
   var t2 = [];
   argomento.attrA.forEach(w=>t2.push(trialIat(w,'attrA','left',[argomento.etichettaA],[argomento.etichettaB],'test2_attributo',argomento.id,null,numeroTestAttivita,domandaTestAttivita)));
   argomento.attrB.forEach(w=>t2.push(trialIat(w,'attrB','right',[argomento.etichettaA],[argomento.etichettaB],'test2_attributo',argomento.id,null,numeroTestAttivita,domandaTestAttivita)));
@@ -415,8 +415,8 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     });
 
     var nota = numeroTest === (primoArgomento ? 3 : 2)
-      ? "La categoria <b>Libertà</b> è sempre a sinistra. <br> La categoria <b>Controllo</b> è sempre a destra. <br>Il termine o comportamento che apparirà al centro è associato ad una delle categorie <b>Libertà o Controllo.</b>"
-      : "Attenzione: La categoria <b>Libertà</b> rimane a sinistra. <br> La categoria <b>Controllo</b> rimane a destra. <br> Sono cambiate le posizioni delle categorie <b>ACCETTABILE e CRITICABILE</b> rispetto al test precedente.";
+      ? "La categoria <b>Libertà</b> è sempre a sinistra. <br> La categoria <b>Controllo</b> è sempre a destra. <br>Il termine o comportamento che apparirà al centro è associato ad una delle categorie opposte <b>Libertà o Controllo.</b>"
+      : "Attenzione: La categoria <b>Libertà</b> rimane a sinistra. <br> La categoria <b>Controllo</b> rimane a destra. <br> Sono cambiate le posizioni degli aggettivi <b>Accettabile e Criticabile</b> rispetto al test precedente.<br> La risposta che darai scegliendo DESTRA o SINISTRA servirà per <br> assegnare il termine o comportamento mostrato al centro ad una <br> delle categorie opposte <b>Libertà o Controllo.</b>";
 
     fasi.push(schermataTesto(
       "<h3>Test " + numeroTest + "</h3>" +
@@ -779,7 +779,7 @@ function paginaErrori() {
 // ---------------- avvio ----------------
 timeline.push(schermataDatiPartecipante());
 timeline.push(schermataTesto(
-  "<h2>Test di associazione implicita</h2><p style='text-align:center;'><p>Affronterai una serie di test sui comportamenti nelle relazioni di coppia.<br> Verranno mostrate in alto, a destra e a sinistra, due categorie opposte. <br>Per ogni prova, comparirà al centro un termine che è associato ad una delle categorie. <br> Il più velocemente possibile, senza sacrificare l'accuratezza, premi <b>SINISTRA</b> o <b>DESTRA</b> per associare il termine alla categoria corretta..<br>Se sbagli, correggi la risposta prima di proseguire.</p>"
+  "<h2>Test di associazione implicita sulle relazioni di coppia</h2><p style='text-align:center;'><p>Affronterai una serie di test sui comportamenti nelle relazioni di coppia.<br> Verranno mostrate in alto, a destra e a sinistra, due categorie opposte. <br>Per ogni test, comparirà al centro un termine che è associato ad una delle categorie. <br> Il più velocemente possibile, senza sacrificare l'accuratezza, premi <b>SINISTRA</b> o <b>DESTRA</b> per associare il termine alla categoria corretta.<br>Se sbagli, correggi la risposta prima di proseguire.</p>"
 ));
 var ordine = argomenti.slice();
 // Ordine fisso imposto dal protocollo: la combinazione stereotipica
