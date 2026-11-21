@@ -720,10 +720,19 @@ function paginaErrori() {
           : tr.etichetta_destra;
       });
 
-      var rispostaCorretta =
-        tr.risposta_corretta === 'left'
-          ? tr.etichetta_sinistra
-          : tr.etichetta_destra;
+  var rispostaCorretta;
+
+if (tr.block === 'combinato') {
+  rispostaCorretta =
+    tr.risposta_corretta === 'left'
+      ? 'Libertà'
+      : 'Controllo';
+} else {
+  rispostaCorretta =
+    tr.risposta_corretta === 'left'
+      ? tr.etichetta_sinistra
+      : tr.etichetta_destra;
+}
 
       html += "<tr>" +
         "<td>" + tr.stimulus_name + "</td>" +
