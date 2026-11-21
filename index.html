@@ -400,7 +400,7 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
     });
    target_accettabile.forEach(function(w) {
       ts.push(trialIat(
-        w, 'accettabile', femminileConA ? 'left' : 'right',
+        w, 'accettabile', 'left',
         sx, dx, 'combinato', argomento.id, cond,
         numeroTest, domandaCombinata
       ));
@@ -408,7 +408,7 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
 
     target_criticabile.forEach(function(w) {
       ts.push(trialIat(
-        w, 'criticabile', femminileConA ? 'right' : 'left',
+        w, 'criticabile','right',
         sx, dx, 'combinato', argomento.id, cond,
         numeroTest, domandaCombinata
       ));
