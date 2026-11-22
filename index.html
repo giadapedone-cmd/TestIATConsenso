@@ -18,6 +18,28 @@
   .barra-categorie span { flex:1; white-space:normal; word-break:break-word; line-height:1.3; }
   .barra-categorie span:first-child { text-align:left; }
   .barra-categorie span:last-child { text-align:right; }
+
+/* Corrispondenza visiva: SINISTRA / LIBERTÀ = verde; DESTRA / CONTROLLO = rosso. */
+.colore-liberta { color: #198754; }
+.colore-controllo { color: #c0392b; }
+.pulsante-lato.lato-sinistro {
+  color: #198754;
+  border-color: #198754;
+  background: #eaf6ef;
+}
+.pulsante-lato.lato-destro {
+  color: #c0392b;
+  border-color: #c0392b;
+  background: #fbeeee;
+}
+.pulsante-lato.lato-sinistro:active { background: #198754; color: white; }
+.pulsante-lato.lato-destro:active { background: #c0392b; color: white; }
+@media (hover:hover) {
+  .pulsante-lato.lato-sinistro:hover { background: #d8eee1; }
+  .pulsante-lato.lato-destro:hover { background: #f5dddd; }
+  .pulsante-lato.lato-sinistro:hover:active { background: #198754; color: white; }
+  .pulsante-lato.lato-destro:hover:active { background: #c0392b; color: white; }
+}
 .parola-centro { 
   display: flex; 
   align-items: center; 
@@ -282,12 +304,31 @@ function trialIat(parola, categoria, lato, etichettaSx, etichettaDx, blocco, top
 var primoLato = null;
 var rtPrimoTentativo = null;
 var latiErrati = [];
+    function htmlEtichettaCategorie(valore) {
+      return [].concat(valore).map(function(etichetta) {
+        var testo = String(etichetta);
+        var classe = '';
+        if (testo.trim().toLowerCase() === 'libertà') {
+          classe = 'colore-liberta';
+        } else if (testo.trim().toLowerCase() === 'controllo') {
+          classe = 'colore-controllo';
+        }
+        return classe
+          ? "<span class='" + classe + "'>" + testo + "</span>"
+          : "<span>" + testo + "</span>";
+      }).join("<span> + </span>");
+    }
+
     schermo.innerHTML =
-      "<div class='barra-categorie'><span>"+[].concat(etichettaSx).join(' / ')+"</span><span>"+[].concat(etichettaDx).join(' / ')+"</span></div>"+
-      "<div class='parola-centro'><h1>"+parola+"</h1></div>"+
-      "<div class='pulsanti-risposta'>"+
-      "<button class='pulsante-lato' id='btn-sx'>◀ SINISTRA<br><span style='font-weight:normal;font-size:0.85em;'>"+"</span></button>"+
-      "<button class='pulsante-lato' id='btn-dx'>DESTRA ▶<br><span style='font-weight:normal;font-size:0.85em;'>"+"</span></button></div>";
+      "<div class='barra-categorie'>" +
+      "<span>" + htmlEtichettaCategorie(etichettaSx) + "</span>" +
+      "<span>" + htmlEtichettaCategorie(etichettaDx) + "</span>" +
+      "</div>" +
+      "<div class='parola-centro'><h1>" + parola + "</h1></div>" +
+      "<div class='pulsanti-risposta'>" +
+      "<button class='pulsante-lato lato-sinistro' id='btn-sx'>◀ SINISTRA</button>" +
+      "<button class='pulsante-lato lato-destro' id='btn-dx'>DESTRA ▶</button>" +
+      "</div>";
 
     function tocco(latoScelto){
       var rt = performance.now() - inizio;
@@ -654,8 +695,8 @@ function calcolaDScore(topicId) {
     var s = sintesi(a.id);
     if (!s) return "<h3>"+a.titolo+"</h3><p style='text-align:center;color:#7f8c8d;'>Dati insufficienti per questo argomento.</p>";
     return "<h3>"+a.titolo+" — Tempi di risposta</h3>"+
-      "<p style='text-align:center;'>Tempo medio delle risposte che <b>confermano</b> lo stereotipo:<br><span style='font-size:22px;'>"+s.mS+" ms</span></p>"+
-      "<p style='text-align:center;'>Tempo medio delle risposte che <b>NON confermano</b> lo stereotipo:<br><span style='font-size:22px;'>"+s.mC+" ms</span></p>";
+      "<p style='text-align:center;'>Tempo medio delle risposte che <b>confermano</b> l'associazione tra libertà e accettabile e controllo e criticabile:<br><span style='font-size:22px;'>"+s.mS+" ms</span></p>"+
+      "<p style='text-align:center;'>Tempo medio delle risposte che <b>NON confermano</b> l'associazione tra libertà e accettabile e controllo e criticabile:<br><span style='font-size:22px;'>"+s.mC+" ms</span></p>";
   }
   function paginaDScore(a){
     var d = dScorePerArgomento[a.id];
@@ -663,7 +704,7 @@ function calcolaDScore(topicId) {
     return "<h3>"+a.titolo+" — Punteggio D</h3>"+
       "<p style='text-align:center;font-size:30px;font-weight:bold;'>"+dTesto+"</p>"+
       "<p style='text-align:center;'>"+frasePerD(d)+"</p>"+
-      "<p style='font-size:12px;color:#7f8c8d;text-align:center;margin-top:10px;'>Il punteggio può variare da <b>-2</b> a <b>+2</b>: se vicino allo zero implica nessuna associazione implicita rilevante; più si allontana dallo zero (in positivo), più forte sarà l'associazione in direzione dello stereotipo; più si allontana dallo zero (in negativo), più forte sarà l'associazione in direzione contraria allo stereotipo.<br> Non è un giudizio sulla persona: riflette solo i tempi di reazione in questo test.</p>";
+      "<p style='font-size:12px;color:#7f8c8d;text-align:center;margin-top:10px;'>Il punteggio può variare da <b>-2</b> a <b>+2</b>: se vicino allo zero implica nessuna associazione implicita rilevante; più si allontana dallo zero (in positivo), più forte sarà l'associazione tra libertà e accettabile e controllo e criticabile; più si allontana dallo zero (in negativo),  più forte sarà l'associazione contraria, ossia tra libertà e criticabile e controllo e accettabile.<br> Non è un giudizio sulla persona: riflette solo i tempi di reazione in questo test.</p>";
   }
 
   function testoStato(){
