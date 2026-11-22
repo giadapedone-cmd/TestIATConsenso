@@ -39,11 +39,17 @@
 }
   .pulsanti-risposta { display:flex; gap:clamp(8px, 2vw, 16px); padding-bottom:10px; }
   .pulsante-lato { flex:1; padding:clamp(18px, 3vw, 26px) 8px; font-size:clamp(14px, 2vw, 18px); font-weight:bold; border:3px solid #343a40; border-radius:10px; background:white; color:#343a40; cursor:pointer; transition:background .1s; }
-  /* Nei soli Test 3 e 4 colora le parole SINISTRA e DESTRA; i pulsanti restano neutri. */
-  .pulsante-lato.colorato-test-combinato .testo-sinistra { color:#198754; }
-  .pulsante-lato.colorato-test-combinato .testo-destra { color:#c0392b; }
-  .nota-combinata { font-size:clamp(16px, 2.2vw, 19px); line-height:1.55; color:#555; text-align:center; }
   .pulsante-lato:active { background:#343a40; color:white; }
+  /* Nei soli Test 3 e 4: SINISTRA richiama Libertà (verde), DESTRA Controllo (rosso). */
+  .pulsante-lato.colore-liberta { color:#198754; }
+  .pulsante-lato.colore-controllo { color:#c0392b; }
+  .pulsante-lato.colore-liberta:active { color:#198754; }
+  .pulsante-lato.colore-controllo:active { color:#c0392b; }
+  .nota-test-combinato { color:#7f8c8d; font-size:18px; line-height:1.55; text-align:center; }
+  .riepilogo-risultati p { font-size:18px; line-height:1.55; }
+  .riepilogo-risultati p.spiegazione-dscore { font-size:16px !important; line-height:1.6; margin-top:16px; }
+  .riepilogo-risultati h3 { font-size:22px; }
+  .riepilogo-risultati table { font-size:15px; }
   @media (hover:hover) { .pulsante-lato:hover { background:#f1f3f5; } .pulsante-lato:hover:active { background:#343a40; } }
   .x-rossa { position:fixed; top:45%; left:0; right:0; text-align:center; font-size:70px; color:#c0392b; font-weight:bold; pointer-events:none; }
   #errore-form { color:#c0392b; font-size:13px; min-height:18px; text-align:center; }
@@ -306,8 +312,7 @@ var latiErrati = [];
       }).join("<span> + </span>");
     }
 
-    var classeBottoni = applicaColori ? ' colorato-test-combinato' : '';
-
+    var classiBottoniColorati = (Number(numeroTest) === 3 || Number(numeroTest) === 4);
     schermo.innerHTML =
       "<div class='barra-categorie'>" +
       "<span>" + htmlEtichettaCategorie(etichettaSx) + "</span>" +
@@ -315,8 +320,8 @@ var latiErrati = [];
       "</div>" +
       "<div class='parola-centro'><h1>" + parola + "</h1></div>" +
       "<div class='pulsanti-risposta'>" +
-      "<button class='pulsante-lato" + classeBottoni + "' id='btn-sx'>◀ <span class='testo-sinistra'>SINISTRA</span></button>" +
-      "<button class='pulsante-lato" + classeBottoni + "' id='btn-dx'><span class='testo-destra'>DESTRA</span> ▶</button>" +
+      "<button class='pulsante-lato" + (classiBottoniColorati ? " colore-liberta" : "") + "' id='btn-sx'>◀ SINISTRA</button>" +
+      "<button class='pulsante-lato" + (classiBottoniColorati ? " colore-controllo" : "") + "' id='btn-dx'>DESTRA ▶</button>" +
       "</div>";
 
     function tocco(latoScelto){
@@ -453,7 +458,7 @@ function timelineArgomento(argomento, stereoPrima, primoArgomento){
       "<p style='text-align:center;'>Categorie combinate:<br>" +
       sx.join(' + ') + " / " + dx.join(' + ') +
       "</p>" +
-      "<p class='nota-combinata'>" +
+      "<p class='nota-test-combinato'>" +
       nota + "</p>"
     ));
 
@@ -684,8 +689,8 @@ function calcolaDScore(topicId) {
     var s = sintesi(a.id);
     if (!s) return "<h3>"+a.titolo+"</h3><p style='text-align:center;color:#7f8c8d;'>Dati insufficienti per questo argomento.</p>";
     return "<h3>"+a.titolo+" — Tempi di risposta</h3>"+
-      "<p style='text-align:center;font-size:16px;line-height:1.5;'>Tempo medio delle risposte che <b>confermano</b> l'associazione tra libertà e accettabile e controllo e criticabile:<br><span style='font-size:22px;'>"+s.mS+" ms</span></p>"+
-      "<p style='text-align:center;font-size:16px;line-height:1.5;'>Tempo medio delle risposte che <b>NON confermano</b> l'associazione tra libertà e accettabile e controllo e criticabile:<br><span style='font-size:22px;'>"+s.mC+" ms</span></p>";
+      "<p style='text-align:center;'>Tempo medio delle risposte che <b>confermano</b> l'associazione tra libertà e accettabile e controllo e criticabile:<br><span style='font-size:22px;'>"+s.mS+" ms</span></p>"+
+      "<p style='text-align:center;'>Tempo medio delle risposte che <b>NON confermano</b> l'associazione tra libertà e accettabile e controllo e criticabile:<br><span style='font-size:22px;'>"+s.mC+" ms</span></p>";
   }
   function paginaDScore(a){
     var d = dScorePerArgomento[a.id];
@@ -693,11 +698,11 @@ function calcolaDScore(topicId) {
     return "<h3>"+a.titolo+" — Punteggio D</h3>"+
       "<p style='text-align:center;font-size:30px;font-weight:bold;'>"+dTesto+"</p>"+
       "<p style='text-align:center;'>"+frasePerD(d)+"</p>"+
-      "<p style='font-size:15px;line-height:1.6;color:#666;text-align:center;margin-top:14px;'>" +
+      "<p class='spiegazione-dscore' style='color:#7f8c8d;text-align:center;'>" +
       "Il punteggio può variare da <b>-2</b> a <b>+2</b>:<br>" +
-      "se è vicino allo zero, implica un'associazione implicita poco rilevante;<br>" +
-      "più si allontana dallo zero in positivo, più forte sarà l'associazione tra libertà e accettabile e tra controllo e criticabile;<br>" +
-      "più si allontana dallo zero in negativo, più forte sarà l'associazione contraria, ossia tra libertà e criticabile e tra controllo e accettabile.<br><br>" +
+      "se vicino allo zero, implica nessuna associazione implicita rilevante;<br>" +
+      "più si allontana dallo zero (in positivo), più forte sarà l'associazione tra libertà e accettabile e controllo e criticabile;<br>" +
+      "più si allontana dallo zero (in negativo), più forte sarà l'associazione contraria, ossia tra libertà e criticabile e controllo e accettabile.<br><br>" +
       "Il test non è un giudizio sulla persona: riflette solo i tempi di reazione in questo test.</p>";
   }
 
@@ -796,7 +801,7 @@ if (tr.block === 'combinato') {
     var isUltima = i === pagine.length - 1;
     schermoSuUltima = isUltima;
     var extraFinale = isUltima ? testoStato() : "";
-    schermo.innerHTML = "<div>"+pagine[i]+"</div>"+extraFinale+
+    schermo.innerHTML = "<div class='riepilogo-risultati'>"+pagine[i]+"</div>"+extraFinale+
       (isUltima ? "<button type='button' id='pulsante-scarica-json' style='display:block;width:100%;padding:14px;margin-top:20px;background:#198754;color:white;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;'>Salva copia JSON sul dispositivo</button>"+
        "<button type='button' id='pulsante-mostra-json' style='display:block;width:100%;padding:12px;margin-top:10px;background:#343a40;color:white;border:none;border-radius:8px;font-size:15px;cursor:pointer;'>Se il download non parte: mostra/copia i dati</button>"+
        "<div id='area-copia-json' style='display:none;margin-top:12px;'><p style='font-size:13px;'>Puoi copiare il contenuto e incollarlo in un editor di testo. Salva il file con il nome <b id='nome-file-json'></b>.</p><textarea id='testo-copia-json' readonly style='width:100%;min-height:180px;font-size:12px;'></textarea><button type='button' id='pulsante-copia-json' style='width:100%;padding:12px;margin-top:8px;'>Copia JSON</button></div>" : "")+
